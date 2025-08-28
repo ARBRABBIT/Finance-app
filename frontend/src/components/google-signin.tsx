@@ -6,7 +6,25 @@ import { exchangeGoogleIdToken } from "@/lib/api";
 
 declare global {
   interface Window {
-    google?: any;
+    google?: {
+      accounts: {
+        id: {
+          initialize: (options: {
+            client_id: string;
+            callback: (credentialResponse: { credential: string }) => void;
+          }) => void;
+          renderButton: (
+            parent: HTMLElement,
+            options: {
+              theme?: string;
+              size?: string;
+              shape?: string;
+              width?: number;
+            }
+          ) => void;
+        };
+      };
+    };
   }
 }
 
@@ -47,7 +65,7 @@ export function GoogleSignInButton({ onSignedIn }: GoogleSignInButtonProps) {
             await exchangeGoogleIdToken(credentialResponse.credential);
             toast.success("Signed in with Google");
             onSignedIn?.();
-          } catch (err) {
+          } catch {
             toast.error("Google sign-in failed");
           }
         },
@@ -58,7 +76,7 @@ export function GoogleSignInButton({ onSignedIn }: GoogleSignInButtonProps) {
         shape: "pill",
         width: 320,
       });
-    } catch (e) {
+    } catch {
       // noop
     }
   }, [ready, onSignedIn]);
