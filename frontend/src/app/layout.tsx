@@ -1,7 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import NavBar from "@/components/NavBar";
+import QuickActionsBar from "@/components/QuickActionsBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,12 +18,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Budget Tracker",
   description: "Track income, expenses, and budgets on mobile",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
   themeColor: "#0a0a0a",
 };
 
@@ -34,20 +37,25 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="manifest" href="/manifest.json" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var t=localStorage.getItem('theme');if(t==='dark'){document.documentElement.classList.add('dark');}}catch(e){}})();",
+          }}
+        />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         style={{ height: "100dvh", overflow: "hidden" }}>
-        <div className="mx-auto max-w-[480px] h-[100dvh] grid grid-rows-[1fr_auto] bg-background">
-          <main className="overflow-y-auto no-scrollbar p-4">
+        <div className="mx-auto max-w-[480px] h-[100dvh] grid grid-rows-[auto_1fr] bg-background">
+          <div className="hidden md:block">
+            <NavBar />
+          </div>
+          <main className="overflow-y-auto no-scrollbar p-4 pb-24 md:pb-4">
             {children}
           </main>
-          <nav className="border-t px-4 py-2 grid grid-cols-3 gap-2 text-sm">
-            <button className="py-2 rounded-md bg-primary text-primary-foreground">Dashboard</button>
-            <button className="py-2 rounded-md border">Add</button>
-            <button className="py-2 rounded-md border">Profile</button>
-          </nav>
         </div>
         <Toaster richColors closeButton position="top-center" />
+        <QuickActionsBar />
       </body>
     </html>
   );
